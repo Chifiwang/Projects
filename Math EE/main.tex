@@ -1,0 +1,730 @@
+\documentclass[pstricks, border=12pt]{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+\usepackage{apacite}
+\usepackage{indentfirst}
+\DeclareMathOperator{\Fib}{Fib}
+\usepackage{pgfplots}
+\pgfplotsset{compat = newest}
+\usepgfplotslibrary{colormaps}
+\usepackage{pst-plot}
+\psset{unit=5mm,plotpoints=1000,algebraic}
+\usepackage{pst-ode}
+\usepackage{setspace} \singlespacing
+\usepackage[clean]{svg}
+\usepackage{listings}
+\usepackage[title]{appendix}
+\usepackage{layout}
+
+
+
+% \title{Dynamics of Curves of Pursuit: \\
+% \large A Comparison of Static and Dynamic Basis Vectors\\
+
+
+
+% Research Question: How do static and rotating axis emphasise different aspects of the behaviour of the pursuit curve
+% with changing relative velocities?\\
+% \small Word Count: 3765}
+% % \author{Candidate: 000480 0115}
+% \date{}
+
+
+\begin{document}
+% \maketitle
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        Dynamics of Curves of Pursuit:
+            
+        \vspace{0.5cm}
+        \LARGE
+        A Comparison of Static and Dynamic Basis Vectors\\
+            
+        \vspace{0.75cm}
+
+        
+        \large 
+        Research Question: How do static and rotating axis emphasise different aspects of the behaviour of the pursuit curve
+with changing relative velocities?\\
+\vspace{0.25cm}
+        Subject: Mathematics\\
+        \vspace{0.5cm}
+            
+        Word Count: 3765
+           \vfill            
+    \end{center}
+\end{titlepage}
+\newpage
+\tableofcontents
+\newpage
+
+% \begin{abstract}
+% The pursuit curve is a curve which describes the path of motion of an object "chasing" another with a known path when both objects have constant velocity \cite{wolframalpha_2022}. Historically, this class of curve was first studied by Boole and Bouguer \cite{lloyd_2006}. These curves describe a certain type of problem which is not described much in high school mathematics courses, path minimization problems, making them a interesting area of study. Path minimization problems can come in many shapes and forms. For example, calculus of variations deals with the minimization and maximization of functionals which are functions of functions to find the minimum and maximum paths given some conditions. In this case, the pursuit curve deals with the way by which 1 point tends to another, both moving at a constant velocity. In studying the pursuit curves through static and rotating axis, via a change in basis vectors for the vector space used to solve the problem, it is possible to emphasise different aspects of path and convergence, yielding more nuanced understanding of the curve itself.
+% \end{abstract}
+
+% {\bf Keywords:} Pursuit Curve, Vector, Trajectory, Vector Field, Convergence, Divergence, Vector Space, Axis, Basis Vector
+
+
+\section{Introduction}
+Differential equations have a lot of power in describing nature, either through physics, chemistry, biology, or mathematics itself. Feynman once said that "[Calculus] is the language God talks" \cite{strogatz_2021}. I want to study one such differential equation to see this beauty for myself, the pursuit curve.
+
+The pursuit curve is a curve which describes the path of motion of an object "chasing" another with a known path when both objects have constant velocity \cite{wolframalpha_2022}. Historically, this class of curve was first studied by Boole and Bouguer \cite{lloyd_2006}. Path problems come in many forms, such as the brachistochrone problem, which is a path optimization problem \cite{sanchis}. In this case, the pursuit curve deals with the way one point tends to another, both moving at a constant velocity \cite{wolframalpha_2022}. These curves describe the motion of pursuit which is useful for studying the dynamics of chases. Thus, understanding how different variables affect the curve would provide insight into these dynamics. In studying the pursuit curves through static and rotating axis, via a change in basis vectors for the vector space used to solve the problem, it is possible to emphasise different aspects of path and convergence, yielding more nuanced understanding of the curve itself.
+
+\subsection{Research Question}
+    How do static and rotating axis emphasise different aspects of the behaviour of the pursuit curve with changing relative velocities?
+    
+\subsection{Question Specifications}
+Since the study of pursuit curves as a class of functions is too broad, it will be convenient to look at a specific case. To accomplish this, the specific pursuit curve being analysed will be the following. \\
+
+\emph{Let $\vec A$ be an arbitrary position vector which changes with time such that at $t = 0$, $\vec A = (x_0, y_0)^T$, where the superscript $T$ represents a transposition from a row vector to a column vector, and $\Vec{A}$ is always moving towards another point $\Vec{B}$ at a constant velocity of $v$.}
+
+\emph{Let $\Vec{B}$ be the pursued point such that its position at any given time is determined by the parametric equation}
+
+\begin{equation}
+    \Vec{B} = 
+    \begin{bmatrix}
+        R\cos(\omega t)\\
+        R\sin(\omega t)
+    \end{bmatrix}
+\end{equation}
+
+where $R$ is the radius of rotation, and $\omega$ is the angular velocity of $\vec B$. The situation can be shown in Figure \ref{problem diagram}, where $\vec B$ is rotating with a speed of $\omega R$ in a circle with radius $R$ and $\vec A$ is moving towards $\Vec{B}$ with a speed $v$.
+
+\begin{figure}[tbh]
+    \centering
+    \includesvg[scale = 0.55]{Static1b.svg}
+    \caption{Velocity diagram for $\vec A$ and $\vec B$}
+    \label{problem diagram}
+\end{figure}
+
+
+\section{Static Axis Method}\label{vec}
+\subsection{Constructing the Parametric Equations}
+$\Vec{A}$'s motion can be uniquely defined in terms of its velocity vector, $\frac{d\Vec{A}}{dt}$ \cite{wolframalpha_2022}. It is known that $\Vec{A}$ chases $\Vec{B}$, so the vector $\Vec{BA}$ can be drawn in to reveal some information about the situation. This can be illustrated in Figure \ref{fig:veldirect}:
+\begin{figure}[tbh]
+    \centering
+    \includesvg[scale = 0.55]{ABa.svg}
+    \caption{Co-linearity of $\vec {BA}$ and $\frac{d\vec A}{dt}$}.
+    \label{fig:veldirect}
+\end{figure}
+
+From this diagram it is possible to see that the vector $\Vec{BA}$ is co-linear with the velocity vector, $\frac{d}{dt}\Vec{A}$. Thus, the direction of motion is a scalar multiple of the vector $\Vec{BA}$. This means that it is possible to write equation \eqref{vecEq1}. 
+
+\begin{equation}
+    \centering
+    \frac{d\Vec{A}}{dt} = k\Vec{BA}
+    \label{vecEq1}
+\end{equation}
+
+where $k$ is some real scalar value. The reason co-linearity is shown via a scalar multiple rather than a dot product between the normal of the derivative and the vector $\Vec{BA}$ is because it will be easier to write a system of differential equations describing the motion with respect to time than finding one higher-order differential equation encapsulating the motion purely using the x and y axis. This is due to the fact that it will be difficult to remove time from the cosine and sine terms from $\vec B$. Thus, using the scalar multiple representation of the situation will be simpler as a solution methodology.
+
+Since the magnitude of the velocity vector is known to be $v$, equation \eqref{norm} can be constructed to solve for k.
+
+\begin{equation}
+    \begin{split}
+    \left|\frac{d\Vec{A}}{dt}\right| &= v\\
+    \left|k\Vec{BA}\right| &= v\\
+        \end{split}
+        \label{norm}
+\end{equation}
+    Notice, that since $\frac{d\Vec{A}}{dt}$ is in the direction of $\Vec{BA}$, $k \in \mathbf{R}^+$. Therefore, it is safe to factor $k$ out of the absolute value sign:
+\begin{equation}
+    \begin{split}
+    k\left|\Vec{BA}\right| = v\\
+    k = \frac{v}{\left|\Vec{BA}\right|}.
+    \end{split}
+\end{equation}
+
+Thus, the path of the pursuit curve can be parameterized into the vector equation \eqref{vecEq2}:
+
+\begin{equation}
+    \centering
+    \begin{split}
+    \frac{d\Vec{A}}{dt} &= v\frac{\Vec{BA}}{|\Vec{BA}|}.
+    \end{split}
+    \label{vecEq2}
+\end{equation}
+
+To finish the system of differential equations, it is necessary to substitute back in the definitions of $\vec A$ and $\vec B$ into the equation. Doing so, the parametric equation \eqref{vecEq3} can be made which is analogous to \cite{ferreol_2017}:
+
+\begin{equation}
+    \begin{split}
+    \begin{bmatrix}
+        \frac{dx}{dt}\\
+        \frac{dy}{dt}
+    \end{bmatrix}
+    = 
+    \begin{bmatrix}
+        \frac{vR\cos(\omega t) - vx}{\sqrt{(R\cos(\omega t) - x)^2 + (R\sin(\omega t) - y)^2}}\\
+        \frac{vR\sin(\omega t) - vy}{\sqrt{(R\cos(\omega t) - x)^2 + (R\sin(\omega t) - y)^2}}
+    \end{bmatrix}.
+    \end{split}
+    \label{vecEq3}
+\end{equation}
+
+This system of parametric equations can be numerically solved to yield a 2d vector field which changes with the parameter time. However, this vector field changes with time, so it would be difficult to plot. Therefore to visualize this parametric equation, a graph with multiple sample trajectories will be useful in showing how the differential equation behaves. These trajectories were made using a python implementation of Euler's method adapted from de Groot's code (see appendix \ref{appendix:code}) to numerically solve the system of differential equations \cite{ABELL2018277, degroot_2020}. Figure \ref{fig:inert vec feild} shows $\Vec{A}$'s trajectories given different starting conditions for when the value $(v, R, \omega) = (1, 1, 1)$ when substituted into equation \eqref{vecEq3}.
+
+\begin{figure}[tbh]
+    \centering
+    \includesvg[scale = 0.55]{SampleTraja.svg}
+    \caption{Sample Trajectories in The Static Axis for $(v, R, \omega) = (1, 1, 1)$}
+    \label{fig:inert vec feild}
+\end{figure}
+
+The sample trajectories use a gradient from purple to yellow to depict the passage of time. The sample trajectories used Euler's method to approximate their curves using an $h$ of $0.01$ over a time frame of 10 seconds, starting at $A(3, 4)^T$, $A(-4, -3)^T$, $A(-0.5, 0.5)^T$, and $A(0.5, -0.5)^T$ respectively. Looking at multiple paths shows some general behaviours of the differential equation, such as the convergence towards $\vec B$ when $(v, R, \omega) = (1, 1, 1)$. Figure \ref{fig:inert vec feild} shows that $\vec A$ tends to $\vec B$ both when $\left|\vec A\right| < \left|\vec B\right|$ and when $\left|\vec A\right| > \left|\vec B\right|$.
+
+However, looking at many trajectories at once makes studying changes harder because of the overlapping curves, making it hard to differentiate them. Thus to study the effect of different values of $(v, R, \omega)$, it will be more effective to look at one starting position.
+\subsection{Changing constants}
+Looking at the three degrees of freedom and that the relative velocities are the main driver of the dynamics between $\vec A$ and $\vec B$, there are three states that $(v, R, \omega)$ can be in:
+$v > R\omega$, $v = R\omega$, and $v < R\omega$. By studying these three states with changes in each parameter, a deeper understanding of the dynamics can be fostered.
+
+\subsubsection{Changing $v$}\label{vchange}
+By changing the value $(v, R, \omega)$, it is possible to see how the pursuit curve works with different parameters. Looking at only changing $v$, it is possible to see using equation \eqref{vecEq3} that this should make $\Vec{A}$ move quicker, and hence converge to $\vec B$ faster. It is possible to see this relationship by numerically solving for the pursuit curve given the starting position $(x_0, y_0)^T = (3, 4)^T$.
+
+In Figures \ref{fig:my_label}, \ref{fig:lab}, and \ref{fig:labb}, it is possible to see the effect of velocity on the pursuit curve.
+
+\begin{figure}[tbh]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{v111a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 1)$}
+         \label{fig:my_label}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[tbh]\ContinuedFloat
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{v211a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (2, 1, 1)$}
+         \label{fig:lab}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{v0.511a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (0.5, 1, 1)$}
+         \label{fig:labb}
+    \end{subfigure}
+    \caption{$\vec A$'s Trajectories with Changing $v$ Values, starting at $A(3, 4)^T$}
+\end{figure}
+
+Looking at the paths of Figures \ref{fig:my_label} and \ref{fig:lab}, where $v$ is doubled from 1 to 2, it is possible to see that the general path is the same between them, it tends towards $\vec B$. However, the larger velocity in Figure \ref{fig:lab} causes $\Vec{A}$ to converge to the path of $\Vec{B}$ faster than Figure \ref{fig:my_label}. Conversely, it is possible to notice that Figure \ref{fig:labb} does not converge, when $v$ is halved to 0.5, going inwards. From this qualitative analysis, it is possible to notice that if $v$ decreases $\Vec{A}$ will diverge from the path, and if it increases it will converge faster.
+\newpage
+\subsubsection{Changing $\omega$}
+Starting back at $(v, R, \omega) = (1, 1, 1)$, doubling and halving $\omega$ also shows similar path deviations when increasing and decreasing as in section \ref{vchange}. This is shown in the difference between Figures \ref{fig:my_label} and \ref{omega2}.
+
+\begin{figure}[tbh]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{w110.5a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 0.5)$}
+         \label{omega2}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{w112a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 2)$}
+         \label{omega3}
+    \end{subfigure}
+    \caption{$\vec A$'s Trajectories with Changing $\omega$ Values, starting at $A(3, 4)^T$}
+\end{figure}
+
+What is interesting with Figure \ref{omega2} is that it follows the same path as Figure \ref{fig:lab}, only with the total distance traveled being halved in the given time frame. This is most likely due to the fact that $\vec A$ and $\vec B$'s relative velocity remained constant between Figures \ref{omega2} and \ref{fig:lab}. In which the only thing that would have changed would be distance traveled which was observed. This also holds as Figure \ref{fig:labb} largely resembles Figure \ref{omega3}, where Figure \ref{omega3} travels more distance but also diverges. 
+
+\subsubsection{Changing $R$}
+Finally analysing what the doubling and halving in R does yields Figures \ref{r1} and \ref{r2}.
+
+\begin{figure}[tbh]
+\centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{r121a.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 2, 1)$}
+         \label{r1}
+     \end{subfigure}%
+    ~ 
+     \begin{subfigure}[t]{0.5\linewidth}
+             \centering
+             \includesvg[scale = 0.55]{r10.51a.svg}
+             \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 0.5, 1)$}
+             \label{r2}
+    \end{subfigure}
+    \caption{$\vec A$'s Trajectories with Changing $R$ values, starting at $A(3, 4)^T$}
+\end{figure}
+Once again, Figure \ref{r1} looks like a scaled up version of Figure \ref{fig:labb} which further strengthens the notion that the shape is dependent on relative velocity. However, Figure \ref{r2} does not look like its counterparts such as Figure \ref{fig:lab}, but it does look like \ref{fig:my_label}. This is most likely due to arc-length traveled, since $R$ not only changed the angular velocity of $\vec B$, but also the distance between $\vec A$ and $\vec B$. 
+
+
+\subsubsection{Changing $d$}
+To test the theory of arc-length, $\vec A$ will be scaled by a value $d$.
+
+By correcting for the change in $d$ values induced by changing $R$ yields Figures \ref{r3} and \ref{r4}.
+\begin{figure}[tbh]
+\centering
+\begin{subfigure}[t]{0.5\linewidth}
+    \centering
+    \includesvg[scale = 0.55]{d68r121a.svg}
+    \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 2, 1)$, starting at $A(6, 8)^T$}
+    \label{r3}
+    % \caption{$\vec A$'s Trajectories for different $R$ and $d$ values}
+\end{subfigure}%
+    ~ 
+\begin{subfigure}[t]{0.5\linewidth}
+    \centering
+    \includesvg[scale = 0.55]{d1.52r10.51a.svg}
+    \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 0.5, 1)$, starting at $A(1.5, 2)^T$}
+    \label{r4}
+\end{subfigure}
+\caption{$\vec A$'s Trajectories for different $R$ and $d$ values}
+\end{figure}
+
+Looking at Figures \ref{omega3} and \ref{r3}, it is possible to notice that the shapes are identical, just scaled. Thus, it is possible to see that when the ratio of $d/R$ is constant the shape will follow the same path as governed by relative velocity.
+
+\subsection{Discussion of Change}
+The trajectories clearly showed $\vec A$'s path. From analysing the behaviour of its trajectory with various factors, it is possible to find many patterns which point towards the main two factors for curve shape being $(v, R, \omega)$ and the relative distance $d$. This can be summarized with the following statement: when changing starting parameters only the ratio $v/R\omega$ effects the shape given that $d/R$ is constant. This behaviour is analogous to that described by Morley \cite{10.2307/2973034}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rotational Reference Frame Method}\label{rot}
+\subsection{Constructing the Parametric Equations}
+The construction of the parametric equations will follow the logic laid out by a user on stack exchange \cite{mathematicsstackexchange_2017}. 
+To utilize the rotational properties of $\Vec{B}$ in a solution it will be useful to have a change of axis into ones that rotate. Thus the following amendment to the vector space will be made.\\
+
+\emph{Let the coordinate axis rotate such that $\vec B$ does not move relative to the x and y axis}\\
+
+The effect of the second adjustment means that $\vec B$ is fixed at $(R, 0)$. However, this is not the only thing that changes. Since $\vec A$ exists in the same vector space as $\vec B$, the rotation also affects $\vec A$ \cite{ferreol_2017}. To find out what is being changed, it is necessary to look at the diagram both before and after the change of axis from a static axis to a rotating one. Using this technique, the following problem can be illustrated in Figures \ref{problem diagram} and \ref{Rot1a}, where the rotating axis are marked by $x'$ and $y'$ whereas the static axis are labeled as $x$ and $y$.
+
+\begin{figure}[tbh]
+        \centering
+        \includesvg[scale = 0.55]{ABrotc.svg}
+        \caption{Velocity diagram of $\vec A$ and $\vec B$ with Rotating Axis}
+        \label{Rot1a}
+\end{figure}
+
+It is important to note that the velocity of $\vec B$ depends on the radius and angular velocity. This will be the same for $\vec A$. Aside from the velocity going towards $\vec B$ explored before, it is necessary to add velocity induced due to the rotation of the vector space, seen in Figure \ref{Rot1a} compared to Figure \ref{problem diagram}.  To figure out what this component looks like, it will be useful to study the general form for $\vec B$, with varying radius and angular velocity. This parametric equation can be seen in equation \eqref{genchange}:
+%EDIT
+\begin{equation}
+    \centering
+        \frac{d}{dt}\Vec{A} = v\frac{\Vec{BA}}{\left|\Vec{BA}\right|} + \vec v_{\text{rot}}.
+        \label{genchange}
+\end{equation}
+Since velocity caused by rotations are tangential to the radius of rotation $v_{\text{rot}}$, equation \ref{ang1} can be made.
+\begin{equation}
+    \begin{split}
+        \frac{d}{dt}\Vec{A} = v\frac{\Vec{BA}}{\left|\Vec{BA}\right|} + \omega \vec A_{\perp}
+    \end{split}
+    \label{ang1}
+\end{equation}
+
+Using the expression $v_{\text{rot}} = \vec\omega\times\vec r$, where the $\times$ is a cross product, $\vec\omega = (0, 0, \omega)^T$ and $r = (x, y)^T$ \cite{hamm_2020, kundu_tritton}. Equation \eqref{rel1} can be constructed as
+
+ \begin{equation}
+ \begin{split}
+     \frac{d}{dt}\Vec{A} &= v\frac{\Vec{BA}}{\left|\Vec{BA}\right|} + \vec\omega\times\Vec{A}\\
+     &=
+      \begin{bmatrix}
+      \frac{R-x}{\sqrt{(R-x)^2+y^2}}v - \omega y\\
+       -\frac{y}{\sqrt{(R-x)^2+y^2}}v + \omega x
+       \end{bmatrix}
+       \end{split}
+     \label{rel1}
+ \end{equation}
+
+ where the first term in both components of \ref{rel1} are the components of $v_A$ which come from the fact that $v_1 = v_A\hat{BA}$, where the hat represents a unit vector of $\vec BA$, and their respective second terms come from the fact that circular motion has a velocity that is perpendicular to any given radius. Thus, since the rotation is centred at the origin, $v_2$ will be perpendicular to $\Vec{OA}$ and proportional to the distance from the origin $\vec A$ is, in the direction of motion of the reference frame. 
+
+Looking at the case were $(v, R, \omega) = (1, 1, 1)$, $v$, $R$, and $\omega$ can all be simplified to $1$. Thus, the parameterized equations of motion for $\Vec{A}$ can be found to be the resultant of $\Vec{A}$'s absolute motion and the velocity caused by the reference frame, which is shown by the equation \eqref{rel2}:
+  \begin{equation}
+     \begin{bmatrix}
+         \frac{d}{dt}x\\
+         \frac{d}{dt}y
+     \end{bmatrix}
+     =
+     \begin{bmatrix}
+         \frac{1-x}{\sqrt{(1-x)^2+y^2}} - y\\
+         -\frac{y}{\sqrt{(1-x)^2+y^2}} + x
+     \end{bmatrix}.
+     \label{rel2}
+ \end{equation}
+
+ Now that $\Vec{A}$'s motion has been parameterized in terms of time, it is possible to numerically solve for the solution of the differential equation. 
+
+ However, because the starting conditions for the pursuit curve was not defined, it is possible to use a vector field to obtain a more holistic view of the behaviour of the pursuit curve. Figure \ref{fig:relvecfield} represents the vector field of the many pursuit curves $\vec A$ may take.
+% \newpage
+\begin{figure}[tbh]
+    \centering
+    \includesvg[scale = 0.55]{vecfieldd.svg}
+    \caption{Rotational Frame Pursuit Curve Velocity Vector Field}
+    \label{fig:relvecfield}
+\end{figure}
+ 
+ Looking at this vector field, it is evident that the motion does tend towards the point $(1, 0)$. This is consistent with what is shown in the inertial reference frame as well in Figure \ref{fig:inert vec feild}. 
+
+ However, instead of studying the vector field, studying the effects of $(v, R, \omega)$ and their relationship with $d$ on $\Vec{A}$'s path using trajectory curves may be more enlightening on what was seen during the analysis in the inertial frame, where once again the same schema of colour representing the passing of time will be used.
+\subsection{Changing Constants}
+By the same reasoning as section \ref{vec}, a study on the three states $v > R\omega$, $v = R\omega$, and $v < R\omega$ will be made.
+ \subsubsection{Changing $v$}
+
+ Figures \ref{relv1}, \ref{relv2}, and \ref{relv3} describe how halving and doubling $\Vec{A}$'s velocity affects its trajectory compared to when $(v, R, \omega) = (1, 1, 1)$.
+\newpage
+ \begin{figure}[tbh]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rv111b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 1)$}
+         \label{relv1}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[tbh]\ContinuedFloat
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rv211b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (2, 1, 1)$}
+         \label{relv2}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rv0.511b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (0.5, 1, 1)$}
+         \label{relv3}
+    \end{subfigure}
+    \caption{Trajectories for $\vec A$ for different values of $v$, starting at $A(3, 4)^T$}
+\end{figure}
+
+From Figures \ref{relv1}, \ref{relv2}, and \ref{relv3}, it is clear that doubling v causes $\Vec{A}$ to completely merge paths with $\Vec{B}$, having equal velocities converge at the limit, and halving velocity diverges entirely, mirroring the results achieved in the inertial reference frame.
+
+However, one interesting difference between the two representations is the clarity by which convergence is shown. Figure \ref{relv1} meanders towards $\Vec{B}$ whereas Figure \ref{relv2} goes directly towards $\Vec{B}$. Moreover, it is clear that Figure \ref{relv3} does not converge because it spirals slowly. Furthermore, numerically taking the limit using \ref{appendix:code} shows that as $t$ increases, $\Vec{A}$ approximately approaches the coordinates $(0.25, 0.43)$, meaning that $\vec A$ rotates on a circle $1/2$ the radius of $\vec B$ which is consistent with Ferreol's findings \cite{ferreol_2017}. Therefore, it is clear that if the ratio $v/R\omega < 1$ $\Vec{A}$ will never catch $\Vec{B}$ as is consistent with intuition and what was observed in section \ref{vec}.
+
+\subsubsection{Changing $\omega$}
+Similarly, the Figures \ref{relv4} and \ref{relva} show a halving and doubling in $\omega$ compared to Figure \ref{relv1}.
+
+ \begin{figure}[tbh]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rw110.5b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 0.5)$, starting at $A(3, 4)^T$}
+         \label{relv4}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rw112b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 1, 2)$, starting at $A(3, 4)^T$}
+         \label{relva}
+    \end{subfigure}
+    \caption{Trajectories for $\vec A$ for different values of $\omega$, starting at $A(3, 4)^T$}
+\end{figure}
+
+Figure \ref{relv4} clearly shows the speed of convergence where Figure \ref{relv4} converges to the point $\Vec{B}$ much faster than Figure \ref{relv1} does looking at the gradient. In addition, it is clear that Figure \ref{relva} diverges from $\vec B$, as numerically taking the limit demonstrates convergence to around $(0.25, 0.43$), identical to that of Figure \ref{relv3}.
+
+Similar to section \ref{vec}, changing $\omega$ such that the relative speed between $\vec A$ and $\vec B$ are constant yields little difference other than arc-length traveled in t time.
+
+\subsubsection{Changing $R$}
+Once again analogous conclusions about $R$ can be drawn using the non-inertial frame, as seen by doubling and halving $R$ in Figures \ref{relv6} and \ref{relv5}.
+
+ \begin{figure}[tbh]
+    \centering
+        \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rr10.51b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 0.5, 1)$}
+         \label{relv6}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{rr121b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 2, 1)$}
+         \label{relv5}
+    \end{subfigure}
+    \caption{$\vec A$'s Trajectories with changing values of $R$, starting at $A(3, 4)^T$}
+\end{figure}
+
+Once again from these Figures, the convergence is shown in a much clearer way than in the non-inertial frame. These trajectories clearly show that divergence and convergence is dependent on the relative velocity. Figure \ref{relv5} converges to  around $(0.5, 0.87)$ rather than $(2, 0)$, when numerically computing the limit once again showing circular motion with $1/2R$ compared to $\vec B$, showing the divergence clearly. Moreover, Figure \ref{relv6} shows a motion nearly identical to \ref{relv1} without the asymptotic behaviour, converging at $(0.5, 0)$.
+
+\subsubsection{Changing $d$}
+
+Once again, changing $d$ will enlighten some symmetries shown to do with distance from $\vec B$. This can be seen in Figures \ref{relv8} and \ref{relv7}.
+\begin{figure}[tbh]
+    \centering
+    \begin{subfigure}[t]{0.5\linewidth}
+             \centering
+             \includesvg[scale = 0.55]{d1.52r10.51c.svg}
+             \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 0.5, 1)$, with $\vec A$ starting at $(1.5, 2)$}
+             \label{relv8}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\linewidth}
+         \centering
+         \includesvg[scale = 0.55]{d68r121b.svg}
+         \caption{$\vec A$'s Trajectory for $(v, R, \omega) = (1, 2, 1)$, with $\vec A$ starting at $(6, 8)$}
+         \label{relv7}
+    \end{subfigure}
+    \caption{$\vec A$'s Trajectories with changing values of $d$}
+\end{figure}
+
+
+
+Once again, it is possible to see that conserving $d/R$ also preserves the shape of the curve under transformations of $R$ in both sets of Figures \ref{relv7} and \ref{relv4} and \ref{relv8} and \ref{relv5} respectively.
+
+\subsection{Discussion of Change}
+Compared to the analysis in section \ref{vec}, it was much clearer as to how the curve behaved asymptotically due to the clarity of convergence to that of a point. Moreover, the results of the analysis yielded identical results. However, numerical computations of convergence yielded a different ratio between the radii of $\vec A$ and $\vec B$ when $v/R\omega = 1/2$ at $1/2R$, identical to that found by Morley \cite{ferreol_2017}.
+
+\section{Converting Between Non-Inertial and Inertial Reference Frames}
+Despite qualitatively seeing identical results between the two forms, it is useful to be able to convert between the two so that the benefits of both representations can be used interchangeably.
+
+The rotating representation can be converted into the inertial reference frame via a linear transformation using a matrix \cite{fitzpatrick}. To do this, a rotation matrix can be used to convert the rotating axis back into static ones \cite{kundu_tritton}, through changing the basis vectors of the space.
+
+To effectively communicate the transformations that will be occurring the following notation will be used: $\Vec{A}_{\text{in}}$ will represent $\vec A$ in the non-rotating, inertial, coordinate system and $\Vec{A}_{\text{rot}}$ will  represent $\vec A$ in the rotating coordinate system.
+ 
+    To convert between the two, equation \eqref{convert} will be used:
+
+\begin{equation}
+     M\Vec{A}_{\text{in}} = \Vec{A}_{\text{rot}}.
+    \label{convert}
+\end{equation}
+
+where $M$ is a matrix which converts between the two reference frames.
+
+The axis $x'$ and $y'$ were made to follow the rotation of $\vec B$. A typical rotation matrix represents the rotation with the angular velocity along the axis of rotation and the rotations surrounding it \cite{kundu_tritton}. Thus, equation \eqref{R} can be found to be $M$.
+
+\begin{equation}
+    \begin{split}
+        M =
+        \begin{bmatrix}
+            \cos(\omega t) &\sin(\omega t) &0\\
+            -\sin(\omega t) &\cos(\omega t) &0\\
+            0 &0 &\omega
+        \end{bmatrix}
+    \end{split}
+    \label{R}
+\end{equation}
+
+To find an expression for $\frac{d}{dt}\Vec{A}_{\text{in}}$, it will be necessary to differentiate equation \ref{convert} to get equation \ref{dif1}:
+
+\begin{equation}
+    \begin{split}
+        M\Vec{A}_{\text{in}} &= \Vec{A}_{\text{rot}}\\
+        \frac{d}{dt}\left(M\Vec{A}_{\text{in}}\right) &= \frac{d}{dt}\Vec{A}_{\text{rot}}\\
+         \vec\omega\times\Vec{A}_{\text{in}} + M\frac{d}{dt}\Vec{A}_{\text{in}} &=\frac{d}{dt}\Vec{A}_{\text{rot}}\\
+        M\frac{d}{dt}\Vec{A}_{\text{in}} &= \frac{d}{dt}\Vec{A}_{\text{rot}} -\vec\omega\times\Vec{A}_{\text{in}}\\
+        \frac{d}{dt}\Vec{A}_{\text{in}}&= M^{-1}\frac{d}{dt}\Vec{A}_{\text{rot}} - M^{-1} \vec\omega\times\Vec{A}_{\text{in}}
+    \end{split}\
+    \label{dif1}
+\end{equation}
+where $\vec\omega$ is the angular velocity induced by the matrix $M$. Since $M$ rotates at a constant speed the velocity of it is a constant, $\omega$, the angular velocity, the derivative $\left(\frac{d}{dt}M\right)\vec A_{\text{in}}$ will be the cross product $\vec\omega\times\vec A_{\text{in}}$ \cite{kundu_tritton}. Furthermore, it is common to represent angular velocity in the orthogonal plane along the axis of rotation, where the magnitude encodes the angular velocity.
+
+Furthermore, using the fact that the transpose of a rotation matrix is also the inverse of the rotation matrix, equation \eqref{dif1} can be rewritten as equation \eqref{newconver}:
+
+\begin{equation}
+    \begin{split}
+        \frac{d}{dt}\Vec{A}_{\text{in}}&= M^{T}\frac{d}{dt}\Vec{A}_{\text{rot}} - M^{T}\vec\omega\times\Vec{A}_{\text{in}}.
+    \end{split}
+    \label{newconver}
+\end{equation}
+
+Now, referring back to equation \eqref{rel2}, it is possible to write an expression for $\frac{d}{dt}\Vec{A}_{\text{rot}}$.
+
+\begin{equation}
+    \frac{d}{dt}\Vec{A}_{\text{rot}} = v\frac{\Vec{BA}_{\text{rot}}}{\left|\Vec{BA}_{\text{rot}}\right|} + \Vec{A_{\text{in}}}\times\vec\omega
+    \label{newRot}
+\end{equation}
+
+The reason the two terms have $\Vec{A}$ in different reference frames is due to the way the set up in Figure \ref{Rot1a} was interpreted. Since $M$ is a rotation matrix, magnitudes are preserved; however, the change in position was accounted for by the induced rotation $M$ rather than using a change in basis vectors, $\Hat{i}$ and $\Hat{j}$. In essence, the matrix $M$ was implicitly distributed into the first term, but not the second when constructing equation \ref{rel1}.
+
+Substituting equation \eqref{newRot} into equation \eqref{newconver}, it is possible to solve for $\frac{d}{dt}\Vec{A}_{\text{rot}}$.
+
+\begin{equation}
+    \begin{split}
+        \frac{d}{dt}\Vec{A}_{\text{in}}&= M^{T}\frac{d}{dt}\Vec{A}_{\text{rot}} - M^{T} \Vec{A}_{\text{in}}\times\vec\omega\\
+        &= M^{T}\left(v\frac{\Vec{BA}_{\text{rot}}}{\left|\Vec{BA}_{\text{rot}}\right|} +  \Vec{A_{\text{in}}}\times\vec\omega\right) - M^{T}\Vec{A}_{\text{in}}\times\vec\omega\\
+        &=M^{T}v\frac{\Vec{BA}_{\text{rot}}}{\left|\Vec{BA}_{\text{rot}}\right|} + M^{T}\Vec{A_{\text{in}}}\times\vec\omega - M^{T}\Vec{A}_{\text{in}}\times\vec\omega\\
+        &=M^{T}v\frac{\Vec{BA}_{\text{rot}}}{\left|\Vec{BA}_{\text{rot}}\right|}\\
+        &=\frac{v}{\left|\Vec{BA}_{\text{rot}}\right|}M^T\left(\Vec{B}_{\text{rot}}-\Vec{A}_{\text{rot}}\right)\\
+        &=\frac{v}{\left|\Vec{BA}_{\text{rot}}\right|}\left(M^T\Vec{B_{\text{rot}}}-M^T\Vec{A}_{\text{rot}}\right)\\
+        &=\frac{v}{\left|\Vec{BA}_{\text{rot}}\right|}\left(\begin{bmatrix}
+            \cos(\omega t)&-\sin(\omega t)&0\\
+            \sin(\omega t)&\cos(\omega t)&0\\
+            0&0&\omega 
+        \end{bmatrix}\begin{bmatrix}
+            R\\0\\0
+        \end{bmatrix} - \begin{bmatrix}
+            \cos(\omega t)&-\sin(\omega t)&0\\
+            \sin(\omega t)&\cos(\omega t)&0\\
+            0&0&\omega 
+        \end{bmatrix}\begin{bmatrix}
+            x_{\text{rot}}\\y_{\text{rot}}\\0
+        \end{bmatrix}\right)\\
+        &= \frac{v}{\left|\frac{d}{dt}\Vec{BA}_{\text{rot}}\right|}\left(\begin{bmatrix}
+            R\cos(\omega t)\\R\sin(\omega t)\\0
+        \end{bmatrix} - \begin{bmatrix}
+            x_{\text{rot}}\cos(\omega t)+y_{\text{rot}}\sin(\omega t)\\-x_{\text{rot}}\sin(\omega t) +y_{\text{rot}}\cos(\omega t)\\0
+        \end{bmatrix}\right)\\
+        &=\frac{v}{\sqrt{(R-x_{\text{rot}})^2 + y^2}}\begin{bmatrix}
+            R\cos(t)-x_{\text{rot}}\cos(\omega t)-y_{\text{rot}}\sin(\omega t)\\R\sin(\omega t)+x_{\text{rot}}\sin(\omega t) -y_{\text{rot}}\cos(\omega t)\\0
+        \end{bmatrix}\\
+    \end{split}
+    \label{rot1}
+\end{equation}
+
+To finish, the following substitutions will be made:\\
+
+\emph{Let}
+    \begin{equation}
+        \begin{split}
+        \begin{bmatrix}
+            x_{\text{in}}\\
+            y_{\text{in}}
+        \end{bmatrix} 
+        &= M^T\begin{bmatrix}
+            x_{\text{rot}}\\
+            y_{\text{rot}}
+        \end{bmatrix}\\
+        &= 
+        \begin{bmatrix}
+            x_{\text{rot}}\cos(\omega t)+y_{\text{rot}}\sin(\omega t)\\-x_{\text{rot}}\sin(\omega t) +y_{\text{rot}}\cos(\omega t)
+        \end{bmatrix}
+        \end{split}
+    \end{equation}
+
+\emph{Let}
+
+\begin{equation}
+    \sqrt{(R-x_{\text{rot}})^2 + y^2} = \sqrt{(R\cos(\omega t) - x_{\text{in}})^2 + (R\sin(\omega t) - y_{\text{in}})^2}
+\end{equation}
+
+The second substitution utilizes the conservation of magnitude that rotation matrices have \cite{weideman_2022}. Using this conservation will be more effective, as it will be more consistent to re-write $\frac{d}{dt}\Vec{A}_{\text{in}}$ in terms of $x_{\text{in}}$ and $y_{\text{in}}$ instead of their rotating counterparts.\\
+
+Thus, equation \eqref{rot1} can be rewritten as equation \eqref{fin}:
+
+\begin{equation}
+    \frac{d}{dt}\Vec{A}_{\text{in}} = \begin{bmatrix}
+        \frac{vR\cos(\omega t) - vx_{\text{in}}}{ \sqrt{(R\cos(\omega t) - x_{\text{in}})^2 + (R\sin(\omega t) - y_{\text{in}})^2}}\\
+        \frac{vR\sin(\omega t) - vy_{\text{in}}}{ \sqrt{(R\cos(\omega t) - x_{\text{in}})^2 + (R\sin(\omega t) - y_{\text{in}})^2}}
+    \end{bmatrix}.
+    \label{fin}
+\end{equation}
+
+Overall, it is clear that both represent the same mathematical construct in different ways.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Comparison of Static and Rotating Axis Methods}
+
+It is notable to look at the difference between the static and rotating axis representations. By studying the differences in their mathematical representations and their respective trajectories, it is possible to see a clear reason for each of the methods' uses and advantages in terms of studying different pursuit curves, paths, and behaviours.
+
+In section \ref{vec}, the equation derived was much more general, $\Vec{B}$ could have been any parametric equation and it would have given the same amount of information about the pursuit curve. the generality of the form enables the vector method to be applied to a variety of situations including but not limited to the case where $\Vec{B}$ undergoes circular motion. By Contrast, the method in section \ref{rot} is highly specific to how $\vec B$ is parameterized. However, it does not seem that the specific paramedic equation affects the method. However, the conversion would become much more difficult. In this sense, the rotating reference frame is tailor-made for the problem, making it more difficult to apply to other scenarios without drastically changing the conversion process.
+
+As for paths, section \ref{vec} provides the clearest representation of what the path would be to an observer. This is intrinsic to the fact that the rotating axis distorted the path of both $\Vec{A}$ and $\Vec{B}$. Thus, for studying the curves of pursuit, a static frame of reference is more enlightening than one that fixes $\Vec{B}$ in place.
+
+However, this does not mean that a non-inertial path is of no use. In terms of studying the affects that $(v, R, \omega)$ and $d$ had on the trajectories and hence the path of pursuit, the non-inertial frame of reference made convergence and divergence much more prominent, as the curve either tended towards the fixed point or just meandered around the space without going to $(R, 0)$. In comparison to studying the complex curves in the fixed plane, it was much clearer what was occurring when the problem was simplified to only one moving object.
+
+Overall, it is clear that no representation of the the pursuit curve is objectively better at analysing its behaviour than the other due to the way that the bias induced by the representations change and accentuate different aspects of the curve's behaviour to the reader.
+
+
+\section{Conclusion}
+To summarize, the analysis of the static and rotating axis interpretations of the pursuit curve provided identical results in terms of the behaviour of the curve of pursuit. It was found that $\vec A$'s path was determined by $v/R\omega$ given that $d/R$ was constant. This was largely consistent with other's solutions \cite{ferreol_2017, mathematicsstackexchange_2017}. Although, the exact behaviour is consistent with the relevant literature \cite{ferreol_2017, 10.2307/2973034}. However, the clarity by which $\vec A$'s behaviour was shown differed. Through the differences in the trajectories shown by the two representations, fixed axis and fixed $\Vec{B}$ respectively, it was made clear that the two axis accentuated different aspects of the mathematical object. Specifically on one hand, the equations derived in section \ref{vec} depicted accurate position-time information and provided a holistic view of the pursuit problem at large and the motion. On the other hand, the equations derived in section \ref{rot} depicted $\Vec{A}$'s relative motion with respect that of $\Vec{B}$'s, meaning the representation was highly tailored to $\Vec{B}$. In which, the rate and nature of convergence was more clearly visible. Through comparing and contrasting these two phase spaces' trajectory representations, a more holistic view of the behaviour of the pursuit curve with respect to $(v, R, \omega)$ and $d$ was made.
+
+
+\newpage
+\begin{appendices}
+
+\section{Euler's Method Implementation}\label{appendix:code}
+
+
+\begin{lstlisting}
+import numpy as np
+
+# Starting Conditions
+#Start pos
+x_0 = 3
+y_0 = 4
+
+#Constants
+v = 1
+r = 1
+w = 1
+d = 1
+
+# Euler's Method Parameters
+T_END = 10
+dt = 0.01
+num_iterations = (int) (np.round(T_END/dt))
+
+
+# Reference Frames
+# Equation (6) in code
+class static_axis: 
+    def dxdt(x, y, t):
+        return (v*(r*np.cos(w*t)-x)/np.sqrt(np.square(r*np.cos(w*t)-x) 
+                + np.square(r*np.sin(w*t)-y)))
+    def dydt(x, y, t):
+        return (v*(r*np.sin(w*t)-y)/np.sqrt(np.square(r*np.cos(w*t)-x) 
+                + np.square(r*np.sin(w*t)-y)))
+
+# Equation (9) in code
+class rotating_axis:
+    def dxdt(x, y, t):
+        return (v*(r-x)/np.sqrt(np.square(r-x)+np.square(y))-w*y)
+    def dydt(x, y, t):
+        return (v*(-y)/np.sqrt(np.square(r-x)+np.square(y))+w*x)
+
+
+# Euler's Method was adapted from Hugo de Groot's implemetation
+# Euler's Method:
+def eulers_method(reference_frame):
+    x_n = np.zeros(num_iterations+1)
+    y_n = np.zeros(num_iterations+1)
+    t_n = np.zeros(num_iterations+1)
+    x_n[0] = d*x_0
+    y_n[0] = d*y_0
+
+    for i in range(1, num_iterations + 1):
+        x = x_n[i-1]
+        y = y_n[i-1]
+        t = t_n[i-1]
+        
+        dx = reference_frame.dxdt(x, y, t)
+        dy = reference_frame.dydt(x, y, t)
+
+        x_n[i] = x + dx*dt
+        y_n[i] = y + dy*dt
+        t_n[i] = t + dt
+
+    for i in range(0, num_iterations + 1):
+        print(x_n[i], y_n[i], t_n[i])
+
+# Uncomment to use
+#eulers_method(static_axis)
+#eulers_method(rotating_axis)
+\end{lstlisting}
+Adaptation of de Groot's implementation of Euler's method \cite{degroot_2020}.
+\end{appendices}
+\newpage
+\bibliographystyle{apacite}
+\bibliography{sample}
+
+\end{document}
